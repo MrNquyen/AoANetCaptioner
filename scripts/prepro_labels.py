@@ -45,7 +45,7 @@ root_path = 'F:\\UNIVERSITY\\NCKH\\NCKH_V2\\baseline_final\\AoANet_Official\\AoA
 sys.path.append(root_path)
 
 # Import fro file
-from utils import load_json, save_json
+from utils import load_json, save_json, load_image
 # from AoANet.utils import load_json, save_json
 # Function
 def build_vocab(imgs, params):
@@ -183,8 +183,8 @@ def main(params):
       jimg['id'] = img['imgid']
 
     if params['images_root'] != '':
-      with Image.open(os.path.join(params['images_root'], img['file_path'], img['file_name'])) as _img:
-        jimg['width'], jimg['height'] = _img.size
+      _img = load_image(os.path.join(params['images_root'], img['file_path'], img['file_name']))
+      jimg['width'], jimg['height'] = _img.size
 
     out['images'].append(jimg)
   
@@ -227,7 +227,8 @@ if __name__ == "__main__":
 
   # options
   parser.add_argument('--max_length', default=128, type=int, help='max length of a caption, in number of words. captions longer than this get clipped.')
-  parser.add_argument('--word_count_threshold', default=20, type=int, help='only words that occur more than this number of times will be put in vocab')
+  parser.add_argument('--word_count_threshold', default=5, type=int, help='only words that occur more than this number of times will be put in vocab')
+
 
   args = parser.parse_args()
   params = vars(args) # convert to ordinary dict

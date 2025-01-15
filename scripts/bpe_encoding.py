@@ -20,7 +20,7 @@ root_path = 'F:\\UNIVERSITY\\NCKH\\NCKH_V2\\baseline_final\\AoANet_Official\\AoA
 sys.path.append(root_path)
 os.chdir(root_path)
 
-from utils import load_json, save_json, get_root_path
+from utils import load_json, save_json
 
 def create_bpe_trainer(corpus):
   # Define constants

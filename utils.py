@@ -4,6 +4,36 @@ import h5py
 import pickle
 import sys
 
+from PIL import Image
+
+MAX_PIXELS = 178956970
+RESAMPLING = Image.LANCZOS
+def load_image(path_or_url):
+    # Lưu lại giá trị giới hạn ban đầu
+    original_max_pixels = Image.MAX_IMAGE_PIXELS
+    # Tạm thời vô hiệu hóa giới hạn pixel
+    Image.MAX_IMAGE_PIXELS = None
+    image = Image.open(path_or_url)
+
+    # Kiểm tra và chuyển đổi ảnh sang RGB nếu cần
+    if image.mode != 'RGB':
+        print(f"Chuyển đổi ảnh từ {image.mode} sang RGB.")
+        image = image.convert('RGB')
+
+    # Kiểm tra số lượng pixel và giảm kích thước nếu cần
+    num_pixels = image.width * image.height
+    if num_pixels > MAX_PIXELS:
+        print(f"Giảm kích thước ảnh từ {image.width}x{image.height} pixels.")
+        scaling_factor = (MAX_PIXELS / num_pixels) ** 0.5
+        new_width = max(1, int(image.width * scaling_factor))
+        new_height = max(1, int(image.height * scaling_factor))
+        image = image.resize((new_width, new_height), RESAMPLING)
+        print(f"Kích thước ảnh sau khi giảm: {new_width}x{new_height} pixels.")
+
+    # Khôi phục lại giá trị giới hạn ban đầu
+    Image.MAX_IMAGE_PIXELS = original_max_pixels
+    return image
+
 # Save Pickle
 def save_pickle(dic_content, save_path):
     with open(save_path, 'wb') as file:
